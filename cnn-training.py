@@ -5,6 +5,7 @@ import os
 import cv2
 import matplotlib.pyplot as plt
 import tensorflow as tf
+from prettytable import PrettyTable
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
@@ -19,7 +20,7 @@ from tensorflow.keras.callbacks import TensorBoard
 #-----------------------------------------------------------------------------------#
 
 # Directorio raíz donde se encuentran las carpetas de cada letra
-root_dir = 'Dataset'
+root_dir = 'Dataset-combinado'
 
 # Listas para almacenar las imágenes y sus etiquetas
 data = []
@@ -81,7 +82,7 @@ def guardar_imagenes(data, n):
         # Imagen original
         ax = plt.subplot(2, int(n/2), i + 1)
         plt.imshow(data[i].reshape(128, 128, 3))
-        plt.gray()
+        #plt.gray()
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
     plt.tight_layout()
@@ -118,7 +119,7 @@ cnn_model = tf.keras.models.Sequential([
 ])
 
 # Se compila el modelo
-cnn_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+cnn_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy', 'Precision', 'Recall', 'AUC'])
 
 # Se imprime un resumen del modelo
 cnn_model.summary()
@@ -139,7 +140,7 @@ early_stopping = EarlyStopping(
 
 print("Entrenando modelo...");
 
-BoardCNN = TensorBoard(log_dir = "C:/Users/juanp/OneDrive/Documentos/GitHub/LESCO-VI/Boards2")
+BoardCNN = TensorBoard(log_dir = "C:/Users/juanp/OneDrive/Documentos/GitHub/PG_Sistema-de-Deteccion-de-Fatiga-para-Conductores/Boards")
 history = cnn_model.fit(X_train,
                         y_train,
                         verbose=1,
@@ -157,10 +158,18 @@ print("Modelo entrenado!");
 
 print("Evaluando modelo...");
 
-loss, accuracy = cnn_model.evaluate(X_test, y_test, verbose=0)
+loss, accuracy, precision, recall, auc = cnn_model.evaluate(X_test, y_test, verbose=0)
 
-print(f"Pérdida en el conjunto de prueba: {loss}")
-print(f"Precisión en el conjunto de prueba: {accuracy}")
+# Crear una tabla
+table = PrettyTable()
+table.field_names = ["Metric", "Value"]
+table.add_row(["Loss", "{:.4f}".format(loss)])
+table.add_row(["Accuracy", "{:.4f}".format(accuracy)])
+table.add_row(["Precision", "{:.4f}".format(precision)])
+table.add_row(["Recall", "{:.4f}".format(recall)])
+table.add_row(["ROC AUC Score", "{:.4f}".format(auc)])
+# Mostrar la tabla
+print("\n"+str(table)+"\n")
 
 print("Modelo evaluado!");
 
@@ -168,8 +177,8 @@ print("Modelo evaluado!");
 
 print("Guardando modelo...");
 
-cnn_model.save('ModeloEntrenado.h5')
-cnn_model.save_weights('PesosModelo.weights.h5')
+cnn_model.save('ModeloEntrenadoV3.h5')
+cnn_model.save_weights('PesosModeloV3.weights.h5')
 
 print("Modelo guardado!");
 
