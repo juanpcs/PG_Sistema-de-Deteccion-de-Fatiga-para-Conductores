@@ -15,18 +15,20 @@ from tensorflow.keras.models import save_model
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.callbacks import TensorBoard
 
+#-----------------------------------------------------------------------------------#
 
+### Script para realizar el entrenamiento del modelo (red neuronal convolucional) ###
 
 #-----------------------------------------------------------------------------------#
 
-# Directorio raíz donde se encuentran las carpetas de cada letra
-root_dir = 'Dataset-combinado'
+# Directorio raíz donde se encuentran las carpetas de cada estado
+root_dir = 'Dataset-combinado-V3-copia'
 
 # Listas para almacenar las imágenes y sus etiquetas
 data = []
 labels = []
 
-# Recorre cada carpeta (cada letra) dentro del directorio raíz
+# Recorre cada carpeta (cada estado) dentro del directorio raíz
 for label in os.listdir(root_dir):
     folder_path = os.path.join(root_dir, label)
     
@@ -177,8 +179,8 @@ print("Modelo evaluado!");
 
 print("Guardando modelo...");
 
-cnn_model.save('ModeloEntrenadoV3.h5')
-cnn_model.save_weights('PesosModeloV3.weights.h5')
+cnn_model.save('ModeloEntrenadoV5.h5')
+cnn_model.save_weights('PesosModeloV5.weights.h5')
 
 print("Modelo guardado!");
 

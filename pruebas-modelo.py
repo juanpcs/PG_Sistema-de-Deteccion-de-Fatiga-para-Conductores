@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 
 from prettytable import PrettyTable
-
+from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, accuracy_score
@@ -15,14 +15,17 @@ from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_sco
 from keras.utils import to_categorical
 from tensorflow.keras.models import load_model
 
+#-----------------------------------------------------------------------------------#
+
+###### Script para realizar la evaluación del rendimiento del modelo entrenado ######
 
 #-----------------------------------------------------------------------------------#
 
 # Directorio raíz donde se encuentran las carpetas de cada letra
-root_dir = 'Dataset-caras-nuevas'
+root_dir = 'Dataset-pruebas-ideal'
 
 # Se carga nuestro modelo entrenado
-cnn_model = load_model('ModeloEntrenadoV2.h5')
+cnn_model = load_model('ModeloEntrenadoV3.h5')
 
 cnn_model.compile(optimizer='adam', 
                   loss='categorical_crossentropy', 
@@ -133,3 +136,4 @@ print("\n"+str(table)+"\n")
 
 print("Modelo evaluado!");
 
+print(classification_report(labels1, y_pred_classes, zero_division=0))

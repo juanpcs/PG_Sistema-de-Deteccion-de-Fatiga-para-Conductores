@@ -6,6 +6,12 @@ import numpy as np
 import logging
 from tensorflow.keras.models import load_model
 
+#-----------------------------------------------------------------------------------#
+
+ #####      Script para probar el funcionamiento del modelo en tiempo real      #####
+
+#-----------------------------------------------------------------------------------#
+
 # Configuración del logger
 logging.basicConfig(
     filename='errores.log',
@@ -27,7 +33,7 @@ mp_drawing = mp.solutions.drawing_utils
 standard_size = (128, 128)  
 
 # Se carga nuestro modelo entrenado
-cnn_model = load_model('ModeloEntrenadoV2.h5')
+cnn_model = load_model('ModeloEntrenadoV3.h5')
 
 #Diccionario utilizado para castear la predicción del modelo (número) a su respectivo estado
 numeros_a_estados = {
@@ -55,6 +61,8 @@ while True:
         detection = results.detections[0]
 
         try:
+
+            #Se obtienen las coordenadas de la cara detectada en el frame
             y_min = int(detection.location_data.relative_bounding_box.ymin * 480)
             height = int(detection.location_data.relative_bounding_box.height * 480)
             x_min = int(detection.location_data.relative_bounding_box.xmin * 640)
@@ -67,7 +75,7 @@ while True:
             resized_face = cv2.resize(cropped_face, standard_size)
 
             # Se muestra la imagen recortada en una ventana separada
-            cv2.imshow('Cara Detectada', cropped_face)
+            #cv2.imshow('Cara Detectada', cropped_face)
 
             # Se muestra la imagen recortada en una ventana separada
             cv2.imshow('Cara redimensionada', resized_face)

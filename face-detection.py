@@ -3,6 +3,12 @@ import mediapipe as mp
 import time
 import os
 
+#-----------------------------------------------------------------------------------#
+
+##### Script para probar la detección y captura de rostros utilizando Mediapipe #####
+
+#-----------------------------------------------------------------------------------#
+
 # Se inicializa la cámara
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # fijar el ancho a 640 píxeles
@@ -14,11 +20,11 @@ face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.9)
 mp_drawing = mp.solutions.drawing_utils
 
 # Se crea un directorio para guardar las fotos si no existe
-output_dir = "Yawning"
+output_dir = "Carpeta"
 os.makedirs(output_dir, exist_ok=True)
 
 # Contador para nombrar las imágenes
-img_counter = 400
+img_counter = 0
 
 # Tiempo de inicio para controlar la captura de fotos
 start_time = time.time()
@@ -43,6 +49,7 @@ while True:
                 
             cv2.imshow("Frame", frame)
 
+            #Se obtienen las coordenadas de la cara detectada en el frame
             y_min = int(detection.location_data.relative_bounding_box.ymin * 480)
             height = int(detection.location_data.relative_bounding_box.height * 480)
             x_min = int(detection.location_data.relative_bounding_box.xmin * 640)
