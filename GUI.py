@@ -75,9 +75,6 @@ while True:
             resized_face = cv2.resize(cropped_face, standard_size)
 
             # Se muestra la imagen recortada en una ventana separada
-            #cv2.imshow('Cara Detectada', cropped_face)
-
-            # Se muestra la imagen recortada en una ventana separada
             cv2.imshow('Cara redimensionada', resized_face)
 
             # Se normaliza el valor de los pixeles al rango [0, 1]

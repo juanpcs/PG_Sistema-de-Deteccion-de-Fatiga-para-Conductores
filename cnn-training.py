@@ -22,7 +22,7 @@ from tensorflow.keras.callbacks import TensorBoard
 #-----------------------------------------------------------------------------------#
 
 # Directorio raíz donde se encuentran las carpetas de cada estado
-root_dir = 'Dataset-combinado-V3-copia'
+root_dir = 'Dataset'
 
 # Listas para almacenar las imágenes y sus etiquetas
 data = []
@@ -38,7 +38,7 @@ for label in os.listdir(root_dir):
         for img_name in os.listdir(folder_path):
             img_path = os.path.join(folder_path, img_name)
             # Cargar la imagen usando OpenCV
-            img = cv2.imread(img_path)
+            img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
             # Se normaliza el valor de los pixeles al rango [0, 1]
             img = img / 255.0
             # Añadir la imagen y su etiqueta a las listas
@@ -69,29 +69,18 @@ y_test = label_encoder.transform(y_test)
 
 print(y_train[:10])
 
-y_train = to_categorical(y_train.astype(int), num_classes=3)
-y_test = to_categorical(y_test.astype(int), num_classes=3)
-
-print(y_train[:10])
-
 #-----------------------------------------------------------------------------------#
-
-def guardar_imagenes(data, n):
-    # Visualizamos las imágenes generadas
-    #n = 20  # Número de imágenes a mostrar
+def guardar_imagenes(data, n): 
     plt.figure(figsize=(20, 4))
     for i in range(n):
-        # Imagen original
         ax = plt.subplot(2, int(n/2), i + 1)
-        plt.imshow(data[i].reshape(128, 128, 3))
-        #plt.gray()
+        plt.imshow(data[i], cmap='gray', vmin=0, vmax=1)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
     plt.tight_layout()
     plt.savefig('prueba.png')
 
 guardar_imagenes(X_train, 20)
-
 #-----------------------------------------------------------------------------------#
 
 # Modelo de CNN con Drop Out
@@ -99,7 +88,7 @@ guardar_imagenes(X_train, 20)
 cnn_model = tf.keras.models.Sequential([
 
     # Capas convolucionales
-    tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(128, 128, 3)), #Capa de entrada convolucional, con 49,152 neuronas y 32 kernel de 3x3
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(64, 64, 1)), #Capa de entrada convolucional, con 32 kernel de 3x3
     tf.keras.layers.BatchNormalization(),
     tf.keras.layers.MaxPooling2D(2, 2), #Capa de pooling 2x2
 
@@ -116,12 +105,12 @@ cnn_model = tf.keras.models.Sequential([
 
     tf.keras.layers.Flatten(),
     tf.keras.layers.Dense(256, activation='relu'), # Capa densa con 256 neuronas
-    tf.keras.layers.Dense(3, activation='softmax')  # Capa de densa de salida
+    tf.keras.layers.Dense(1, activation='sigmoid')  # Capa densa de salida
 
 ])
 
 # Se compila el modelo
-cnn_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy', 'Precision', 'Recall', 'AUC'])
+cnn_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', 'Precision', 'Recall', 'AUC'])
 
 # Se imprime un resumen del modelo
 cnn_model.summary()
@@ -148,7 +137,7 @@ history = cnn_model.fit(X_train,
                         verbose=1,
                         epochs=100,
                         validation_split=0.2,  # Usar una parte de los datos de entrenamiento como set de validación
-                        batch_size=32,
+                        batch_size=64,
                         callbacks=[early_stopping, BoardCNN]
                         #steps_per_epoch=int(np.ceil((len(X_train)*0.8) / float(32))),
                         ##validation_steps=int(np.ceil((len(X_train)*0.2) / float(32)))
@@ -179,8 +168,8 @@ print("Modelo evaluado!");
 
 print("Guardando modelo...");
 
-cnn_model.save('ModeloEntrenadoV5.h5')
-cnn_model.save_weights('PesosModeloV5.weights.h5')
+cnn_model.save('ModeloEntrenado.h5')
+cnn_model.save_weights('PesosModelo.weights.h5')
 
 print("Modelo guardado!");
 
