@@ -42,7 +42,9 @@ try:
             "--width", "640",               # Ancho de la imagen
             "--height", "480",              # Alto de la imagen
             "--nopreview",                  # Sin vista previa
-            "-t", "500"                    # Tiempo antes de la captura (en milisegundos)
+            "-t", "500",                    # Tiempo antes de la captura (en milisegundos)
+            "--vflip",                      # flip vertical a la cámara
+            "--hflip"                       # flip horizontal a la cámara
         ])
 
 
